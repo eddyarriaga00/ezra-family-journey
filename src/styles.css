@@ -21,13 +21,19 @@
   box-sizing: border-box;
 }
 html {
+  min-height: 100%;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: clip;
   background: var(--white);
+}
+#root {
+  min-height: 100vh;
 }
 button,
 input,
@@ -108,6 +114,11 @@ h3 {
   display: flex;
   gap: 22px;
 }
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
 .language-toggle button {
   border: 0;
   background: transparent;
@@ -121,6 +132,38 @@ h3 {
   color: var(--plum);
   border-color: var(--coral);
   font-weight: 600;
+}
+.account-button {
+  min-height: 40px;
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--plum);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.account-button svg {
+  width: 16px;
+}
+.sync-status {
+  width: fit-content;
+  max-width: calc(100% - 36px);
+  margin: 12px auto -18px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #fff1eb;
+  color: var(--plum);
+  font-size: 11px;
+  text-align: center;
+}
+.sync-status.online {
+  background: #eef3eb;
+  color: #596451;
 }
 main {
   width: 100%;
@@ -746,6 +789,9 @@ main {
 .modal-overlay {
   position: fixed;
   inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
   background: rgba(49, 24, 36, 0.58);
   backdrop-filter: blur(10px);
   display: grid;
@@ -920,6 +966,102 @@ main {
   color: #fff;
   border-color: var(--plum);
 }
+.auth-card {
+  width: min(440px, 100%);
+  margin: auto;
+  padding: 28px;
+  border-radius: 26px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+.auth-card > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.auth-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #eef3eb;
+  color: var(--sage);
+}
+.auth-icon svg {
+  width: 22px;
+}
+.auth-card header button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.auth-card header button svg {
+  width: 18px;
+}
+.auth-card h2 {
+  margin: 22px 0 8px;
+  color: var(--plum);
+  font-size: 34px;
+}
+.auth-card > p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 15px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.auth-card input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #fff;
+}
+.auth-card .auth-message {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff1eb;
+  color: var(--plum);
+  font-size: 12px;
+}
+.auth-submit,
+.auth-switch {
+  width: 100%;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.auth-submit {
+  margin-top: 18px;
+  padding: 14px;
+  border: 0;
+  background: var(--plum);
+  color: #fff;
+}
+.auth-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.auth-switch {
+  margin-top: 8px;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--plum);
+  font-size: 12px;
+}
 @media (min-width: 900px) {
   .app {
     padding-bottom: 96px;
@@ -1066,8 +1208,20 @@ main {
   .language-toggle {
     gap: 14px;
   }
+  .top-actions {
+    gap: 8px;
+  }
   .language-toggle button {
     font-size: 12px;
+  }
+  .account-button {
+    width: 38px;
+    min-height: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+  .account-button span {
+    display: none;
   }
   .screen {
     padding: 24px 18px 50px;
