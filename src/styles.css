@@ -922,31 +922,75 @@ main {
 }
 @media (min-width: 900px) {
   .app {
-    padding-bottom: 0;
+    padding-bottom: 96px;
   }
   .top-bar {
+    width: min(calc(100% - 48px), 1180px);
+    height: 104px;
+    margin-top: 22px;
     border-left: 1px solid var(--line);
     border-right: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+    border-radius: 22px 22px 0 0;
   }
   .screen {
-    padding-top: 55px;
+    width: min(calc(100% - 48px), 1120px);
+    padding: 58px 28px 76px;
   }
   .home-screen {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 44px;
+    display: block;
   }
   .home-hero {
-    grid-column: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+    grid-template-areas:
+      "photo copy"
+      "photo facts"
+      "photo action";
+    column-gap: 54px;
+    align-items: start;
+  }
+  .hero-photo {
+    grid-area: photo;
+    height: 590px;
+  }
+  .hero-copy {
+    grid-area: copy;
+    margin: 22px 0 26px;
+    padding-top: 12px;
+  }
+  .hero-copy h1 {
+    font-size: clamp(56px, 5vw, 72px);
+  }
+  .baby-facts {
+    grid-area: facts;
+    margin: 0 0 28px;
+  }
+  .home-hero > .primary-action {
+    grid-area: action;
+    align-self: end;
   }
   .latest-section {
-    grid-column: 2;
-    margin-top: 0;
-    padding-top: 3px;
+    margin-top: 64px;
+  }
+  .latest-section > header {
+    margin-bottom: 22px;
+  }
+  .latest-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .latest-section > header {
+    grid-column: 1 / -1;
   }
   .bottom-nav {
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100% - 48px), 1180px);
+    box-shadow: 0 -14px 36px rgba(78, 23, 53, 0.06);
     border: 1px solid var(--line);
     border-bottom: 0;
     border-radius: 18px 18px 0 0;
@@ -954,18 +998,13 @@ main {
   .site-footer {
     padding-bottom: 25px;
   }
-  .hero-photo {
-    height: 430px;
-  }
-  .hero-copy h1 {
-    font-size: 58px;
-  }
   .moment-preview {
-    grid-template-columns: 88px 1fr auto;
+    min-height: 126px;
+    grid-template-columns: 100px 1fr auto;
   }
   .moment-preview img {
-    width: 88px;
-    height: 80px;
+    width: 100px;
+    height: 96px;
   }
   .preview-icon {
     width: 66px !important;
@@ -973,10 +1012,32 @@ main {
     margin-left: 10px;
   }
   .care-screen,
-  .growth-screen,
+  .growth-screen {
+    width: min(calc(100% - 48px), 920px);
+  }
   .moments-screen {
-    padding-left: 40px;
-    padding-right: 40px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 32px 44px;
+    align-items: start;
+  }
+  .moments-screen > .screen-intro {
+    grid-column: 1 / -1;
+    padding-bottom: 4px;
+  }
+  .moments-screen > .featured-moment {
+    grid-column: 1;
+    position: sticky;
+    top: 28px;
+  }
+  .moments-screen > .photo-gallery {
+    grid-column: 2;
+    margin: 0;
+  }
+  .moments-screen > .primary-action {
+    grid-column: 1 / -1;
+    width: min(100%, 520px);
+    justify-self: center;
   }
 }
 @media (max-width: 600px) {
