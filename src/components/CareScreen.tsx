@@ -26,6 +26,7 @@ function translateEntry(title: string, language: Language, t: ReturnType<typeof 
   if (title === 'Bottle went well') return t.bottleWell
   if (title === 'First bottle') return t.firstBottle
   if (title === 'A stronger grip every day') return t.gripTitle
+  if (title === 'Those bright eyes') return t.gripTitle
   if (title === 'Daily vitamin') return t.dailyVitamin
   return title
 }

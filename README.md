@@ -5,7 +5,7 @@ A bilingual, mobile-first family website for celebrating Ezra’s journey and op
 **Live site:** [eddyarriaga00.github.io/ezra-family-journey](https://eddyarriaga00.github.io/ezra-family-journey/)
 
 > [!IMPORTANT]
-> This repository is public because it is deployed with GitHub Pages on GitHub Free. The application source and bundled placeholder images are visible to everyone. Care updates entered through the website currently stay in that browser’s local storage and are not committed back to GitHub.
+> This repository is public because it is deployed with GitHub Pages on GitHub Free. The application source and bundled family photos are visible to everyone. Care updates entered through the website currently stay in that browser’s local storage and are not committed back to GitHub.
 
 ## What works now
 
@@ -13,7 +13,7 @@ A bilingual, mobile-first family website for celebrating Ezra’s journey and op
 - Four simple destinations: Home, Growth, Care, and Moments
 - Optional weight, feeding, medication, and milestone updates
 - No streaks, reminders, overdue states, or pressure to log consistently
-- Photo-led family moments and replaceable image slots
+- Photo-led family moments using family-approved images of Ezra
 - Responsive weight history chart
 - Local browser persistence
 - GitHub Pages deployment workflow
@@ -21,7 +21,7 @@ A bilingual, mobile-first family website for celebrating Ezra’s journey and op
 
 Local data is intentionally the default so the UI can be used immediately. Clearing browser storage clears local records. Supabase account sync is the next integration step after creating the free project.
 
-Temporary images live in `public/images`. Replace them with Ezra’s real family photos later while keeping the same filenames, or update the corresponding image paths in the screen components.
+Family-approved images live in `public/images/ezra`. Medical portal screenshots, billing details, account identifiers, diagnoses, and care-team information are intentionally excluded from this public repository.
 
 ## Run locally
 

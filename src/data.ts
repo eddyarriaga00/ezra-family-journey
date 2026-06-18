@@ -9,7 +9,7 @@ export const seedEntries: Entry[] = [
   { id: 'med1', kind: 'medication', date: '2026-06-02', title: 'Daily vitamin', amount: 'As directed' },
   { id: 'm1', kind: 'milestone', date: '2026-05-10', title: 'First bottle' },
   { id: 'm2', kind: 'milestone', date: '2026-05-28', title: 'Welcome home, Ezra' },
-  { id: 'm3', kind: 'milestone', date: '2026-06-18', title: 'A stronger grip every day', notes: 'He held on just a little tighter today.' },
+  { id: 'm3', kind: 'milestone', date: '2026-06-18', title: 'Those bright eyes', notes: 'Taking in the world around him.' },
 ]
 
 export function poundsToOunces(label: string) {
