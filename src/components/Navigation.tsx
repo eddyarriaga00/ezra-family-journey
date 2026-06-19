@@ -6,7 +6,8 @@ export function Brand() { return <div className="brand" aria-label="Ezra"><span 
 
 export function TopBar({ language, onLanguage, account, onAccount, showAccount }: { language: Language, onLanguage: (language: Language) => void, account?: string, onAccount: () => void, showAccount: boolean }) {
   const t = useCopy(language)
-  return <header className="top-bar"><Brand/><div className="top-actions"><div className="language-toggle" aria-label={t.language}><button className={language === 'en' ? 'active' : ''} onClick={() => onLanguage('en')}>{t.english}</button><button className={language === 'es' ? 'active' : ''} onClick={() => onLanguage('es')}>{t.spanish}</button></div>{showAccount ? <button className="account-button" onClick={onAccount} title={account}>{account ? <LogOut/> : <LockKeyhole/>}<span>{account ? (language === 'es' ? 'Salir' : 'Sign out') : (language === 'es' ? 'Acceso' : 'Sign in')}</span></button> : null}</div></header>
+  const accountLabel = account ? (language === 'es' ? 'Salir' : 'Sign out') : (language === 'es' ? 'Acceso' : 'Sign in')
+  return <header className="top-bar"><Brand/><div className="top-actions"><div className="language-toggle" aria-label={t.language}><button className={language === 'en' ? 'active' : ''} onClick={() => onLanguage('en')}>{t.english}</button><button className={language === 'es' ? 'active' : ''} onClick={() => onLanguage('es')}>{t.spanish}</button></div>{showAccount ? <button aria-label={accountLabel} className="account-button" onClick={onAccount} title={account}>{account ? <LogOut/> : <LockKeyhole/>}<span>{accountLabel}</span></button> : null}</div></header>
 }
 
 const nav = [ ['home', Home], ['growth', Sprout], ['care', HeartHandshake], ['moments', Images] ] as const
