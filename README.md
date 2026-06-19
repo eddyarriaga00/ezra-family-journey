@@ -26,3 +26,17 @@ all `.env*` files except `.env.example` are ignored by Git.
 
 The gallery remains public. Signing in is required only to create, synchronize,
 or delete care updates. PostgreSQL row-level security isolates each family.
+
+## Quality checks
+
+```bash
+npm run lint
+npm test
+npm run test:e2e
+npm run build
+```
+
+Unit tests cover local-date handling, password recovery, and failed database
+write rollback. Playwright smoke tests cover desktop/mobile rendering, scrolling,
+public photos, navigation, and the authentication dialog. GitHub Actions runs
+all checks before deploying Pages.

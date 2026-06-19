@@ -5,7 +5,7 @@ import type { Entry, EntryKind, Language } from '../types'
 
 const careTypes: Array<[EntryKind, typeof Scale]> = [['weight', Scale], ['feeding', Baby], ['medication', Pill], ['milestone', Star]]
 
-export function CareScreen({ language, entries, onAdd, onDelete }: { language: Language, entries: Entry[], onAdd: (kind?: EntryKind) => void, onDelete: (id: string) => void }) {
+export function CareScreen({ language, entries, onAdd, onDelete, canEdit }: { language: Language, entries: Entry[], onAdd: (kind?: EntryKind) => void, onDelete: (id: string) => void, canEdit: boolean }) {
   const t = useCopy(language)
   const recent = [...entries].sort((a,b) => b.date.localeCompare(a.date)).slice(0, 6)
   return <div className="screen care-screen">
@@ -13,7 +13,7 @@ export function CareScreen({ language, entries, onAdd, onDelete }: { language: L
     <button className="primary-action" onClick={() => onAdd()}><Heart/><Plus/>{t.addCare}</button>
     <div className="care-actions">{careTypes.map(([kind, Icon]) => <button key={kind} className={`care-action ${kind}`} onClick={() => onAdd(kind)}><span><Icon/></span><strong>{t[kind]}</strong></button>)}</div>
     <section className="care-history"><header><h2>{t.recentCare}</h2><Sprout aria-hidden="true"/></header>
-      {recent.length ? <div className="care-timeline">{recent.map(entry => { const Icon = careTypes.find(([kind]) => kind === entry.kind)?.[1] || Heart; return <article key={entry.id}><span className={`history-icon ${entry.kind}`}><Icon/></span><div><time>{formatDate(entry.date, language, { month:'long', day:'numeric' })}</time><strong>{t[entry.kind]}</strong><p>{translateEntry(entry.title, language, t)}</p></div><button onClick={() => onDelete(entry.id)} aria-label={t.delete}><Trash2/></button></article> })}</div> : <p className="empty-copy">{t.noEntries}</p>}
+      {recent.length ? <div className="care-timeline">{recent.map(entry => { const Icon = careTypes.find(([kind]) => kind === entry.kind)?.[1] || Heart; return <article key={entry.id}><span className={`history-icon ${entry.kind}`}><Icon/></span><div><time>{formatDate(entry.date, language, { month:'long', day:'numeric' })}</time><strong>{t[entry.kind]}</strong><p>{translateEntry(entry.title, language, t)}</p></div>{canEdit ? <button onClick={() => onDelete(entry.id)} aria-label={t.delete}><Trash2/></button> : null}</article> })}</div> : <p className="empty-copy">{t.noEntries}</p>}
       <p className="caught-up"><Sprig/>{t.caughtUp}</p>
     </section>
   </div>

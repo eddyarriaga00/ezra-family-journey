@@ -1,23 +1,32 @@
 import { Baby, Pill, Scale, Star, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useModalDialog } from '../hooks/useModalDialog'
 import { useCopy } from '../i18n'
+import { toLocalDateInputValue } from '../lib/date'
 import type { Entry, EntryKind, Language } from '../types'
 
 const icons = { weight: Scale, feeding: Baby, medication: Pill, milestone: Star }
 
-export function AddEntryModal({ language, initialKind, onClose, onSave }: { language: Language, initialKind?: EntryKind, onClose: () => void, onSave: (entry: Entry) => void }) {
+export function AddEntryModal({ language, initialKind, onClose, onSave }: { language: Language, initialKind?: EntryKind, onClose: () => void, onSave: (entry: Entry) => Promise<boolean> | boolean }) {
   const t = useCopy(language)
   const [kind, setKind] = useState<EntryKind>(initialKind || 'milestone')
-  const [form, setForm] = useState({ date: new Date().toISOString().slice(0, 10), time: new Date().toTimeString().slice(0, 5), title: '', amount: '', method: '', notes: '' })
+  const [form, setForm] = useState({ date: toLocalDateInputValue(), time: new Date().toTimeString().slice(0, 5), title: '', amount: '', method: '', notes: '' })
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const sheetRef = useModalDialog<HTMLFormElement>(onClose)
   useEffect(() => { if (initialKind) setKind(initialKind) }, [initialKind])
   const update = (key: keyof typeof form, value: string) => setForm(current => ({ ...current, [key]: value }))
-  const submit = (event: React.FormEvent) => {
+  const submit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (!form.title.trim()) return
-    onSave({ id: crypto.randomUUID(), kind, ...form, time: kind === 'feeding' || kind === 'medication' ? form.time : undefined })
+    setBusy(true)
+    setError('')
+    const saved = await onSave({ id: crypto.randomUUID(), kind, ...form, time: kind === 'feeding' || kind === 'medication' ? form.time : undefined })
+    if (!saved) setError(language === 'es' ? 'No se pudo guardar. Inténtalo de nuevo.' : 'Could not save. Please try again.')
+    setBusy(false)
   }
   return <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="entry-title" onMouseDown={e => e.target === e.currentTarget && onClose()}>
-    <form className="entry-sheet" onSubmit={submit}>
+    <form className="entry-sheet" onSubmit={submit} ref={sheetRef}>
       <header><div><span>{t.add}</span><h2 id="entry-title">{t.entryQuestion}</h2></div><button type="button" onClick={onClose} aria-label={t.cancel}><X /></button></header>
       <div className="entry-kinds">{(Object.keys(icons) as EntryKind[]).map(value => { const Icon = icons[value]; return <button type="button" key={value} className={kind === value ? 'active' : ''} onClick={() => setKind(value)}><Icon/><span>{t[value]}</span></button> })}</div>
       <div className="entry-fields">
@@ -28,7 +37,8 @@ export function AddEntryModal({ language, initialKind, onClose, onSave }: { lang
         {kind === 'feeding' && <label><span>{t.method}</span><input placeholder={t.bottle} value={form.method} onChange={e => update('method', e.target.value)}/></label>}
         <label className="full"><span>{t.optionalNotes}</span><textarea rows={3} value={form.notes} onChange={e => update('notes', e.target.value)}/></label>
       </div>
-      <footer><button type="button" className="secondary" onClick={onClose}>{t.cancel}</button><button type="submit" className="primary">{t.save}</button></footer>
+      {error ? <p className="auth-message" role="alert">{error}</p> : null}
+      <footer><button type="button" className="secondary" onClick={onClose}>{t.cancel}</button><button type="submit" className="primary" disabled={busy}>{busy ? t.syncing : t.save}</button></footer>
     </form>
   </div>
 }

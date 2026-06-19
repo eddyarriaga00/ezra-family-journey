@@ -12,7 +12,7 @@ create table if not exists public.families (
 create table if not exists public.family_members (
   family_id uuid not null references public.families(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
-  role text not null default 'member' check (role in ('owner', 'caregiver', 'viewer')),
+  role text not null default 'viewer' check (role in ('owner', 'caregiver', 'viewer')),
   created_at timestamptz not null default now(),
   primary key (family_id, user_id)
 );
@@ -43,6 +43,7 @@ create table if not exists public.care_entries (
 );
 
 create index if not exists family_members_user_id_idx on public.family_members (user_id);
+create unique index if not exists families_owner_id_idx on public.families (owner_id);
 create index if not exists babies_family_id_idx on public.babies (family_id);
 create index if not exists care_entries_baby_occurred_idx on public.care_entries (baby_id, occurred_at desc);
 create index if not exists care_entries_created_by_idx on public.care_entries (created_by);
@@ -97,6 +98,8 @@ begin
   if current_user_id is null then
     raise exception 'Authentication required';
   end if;
+
+  perform pg_advisory_xact_lock(hashtextextended(current_user_id::text, 0));
 
   select b.id
     into selected_baby_id

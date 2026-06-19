@@ -1,17 +1,12 @@
-import type { Session } from '@supabase/supabase-js'
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import type { Entry } from '../types'
+import { toLocalDateInputValue } from './date'
+import type { Database } from './database.types'
 import { supabase } from './supabase'
 
-type CareEntryRow = {
-  id: string
-  kind: Entry['kind']
-  occurred_at: string
-  title: string
-  amount: string | null
-  method: string | null
-  notes: string | null
-  completed: boolean
-}
+type CareEntryRow = Pick<Database['public']['Tables']['care_entries']['Row'],
+  'id' | 'kind' | 'occurred_at' | 'title' | 'amount' | 'method' | 'notes' | 'completed'
+>
 
 function requireSupabase() {
   if (!supabase) throw new Error('Supabase is not configured.')
@@ -20,15 +15,10 @@ function requireSupabase() {
 
 function fromRow(row: CareEntryRow): Entry {
   const occurredAt = new Date(row.occurred_at)
-  const localDate = [
-    occurredAt.getFullYear(),
-    String(occurredAt.getMonth() + 1).padStart(2, '0'),
-    String(occurredAt.getDate()).padStart(2, '0'),
-  ].join('-')
   return {
     id: row.id,
     kind: row.kind,
-    date: localDate,
+    date: toLocalDateInputValue(occurredAt),
     time: row.kind === 'feeding' || row.kind === 'medication'
       ? occurredAt.toTimeString().slice(0, 5)
       : undefined,
@@ -60,8 +50,8 @@ export async function getSession(): Promise<Session | null> {
   return data.session
 }
 
-export function onSessionChange(callback: (session: Session | null) => void) {
-  return requireSupabase().auth.onAuthStateChange((_event, session) => callback(session))
+export function onSessionChange(callback: (event: AuthChangeEvent, session: Session | null) => void) {
+  return requireSupabase().auth.onAuthStateChange(callback)
 }
 
 export async function signIn(email: string, password: string) {
@@ -74,6 +64,17 @@ export async function signUp(email: string, password: string) {
   const { data, error } = await requireSupabase().auth.signUp({ email, password })
   if (error) throw error
   return data.session
+}
+
+export async function requestPasswordReset(email: string) {
+  const redirectTo = new URL(window.location.pathname, window.location.origin).href
+  const { error } = await requireSupabase().auth.resetPasswordForEmail(email, { redirectTo })
+  if (error) throw error
+}
+
+export async function updatePassword(password: string) {
+  const { error } = await requireSupabase().auth.updateUser({ password })
+  if (error) throw error
 }
 
 export async function signOut() {
@@ -95,7 +96,7 @@ async function fetchEntries(babyId: string) {
     .eq('baby_id', babyId)
     .order('occurred_at', { ascending: true })
   if (error) throw error
-  return (data as CareEntryRow[]).map(fromRow)
+  return data.map(fromRow)
 }
 
 export async function loadDatabase(initialEntries: Entry[]) {
@@ -120,7 +121,7 @@ export async function createEntry(babyId: string, entry: Entry) {
     .select('id, kind, occurred_at, title, amount, method, notes, completed')
     .single()
   if (error) throw error
-  return fromRow(data as CareEntryRow)
+  return fromRow(data)
 }
 
 export async function removeEntry(id: string) {
